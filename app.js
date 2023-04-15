@@ -20,12 +20,6 @@ app.use((req, res, next) => {
 
 app.use(router);
 
-app.use((req, res) => {
-  res.status(404).send({
-    message: 'Страница не найдена',
-  });
-});
-
 app.listen(PORT, () => {
   console.log(`The server is running on ${PORT}`);
 });
