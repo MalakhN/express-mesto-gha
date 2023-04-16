@@ -15,10 +15,7 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: _id })
     .then((card) => {
-      res.send(card);
-      res.status(201).send({
-        message: 'Создана новая карточка',
-      });
+      res.status(201).send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

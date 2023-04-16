@@ -34,9 +34,7 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((newUser) => {
       res.send(newUser);
-      res.status(201).send({
-        message: 'Создан новый пользователь',
-      });
+      res.status(201).send(newUser);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
