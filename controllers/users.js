@@ -33,7 +33,6 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((newUser) => {
-      res.send(newUser);
       res.status(201).send(newUser);
     })
     .catch((err) => {
