@@ -54,7 +54,12 @@ const createUser = (req, res, next) => {
     .hash(req.body.password, 10)
     .then((hash) => User.create({ name, about, avatar, email, password: hash }))
     .then((newUser) => {
-      res.status(201).send(newUser);
+      res.status(201).send({
+        email: newUser.email,
+        name: newUser.name,
+        about: newUser.about,
+        avatar: newUser.avatar,
+      });
     })
     .catch((err) => {
       if (err.code === 11000) {
