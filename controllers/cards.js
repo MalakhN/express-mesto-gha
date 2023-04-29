@@ -34,20 +34,20 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
-      } else if (!card.owner.equals(req.user._id)) {
-        throw new ForbiddenError('Пользователь не может удалить карточку, которую он не создавал');
-      } else {
-        card.deleteOne()
-          .then(() => res.status(200))
-          .catch(next);
       }
+      if (!card.owner.equals(req.user._id)) {
+        throw new ForbiddenError('Пользователь не может удалить карточку, которую он не создавал');
+      }
+      card.deleteOne()
+        .then(() => res.status(200).send({ message: 'Карточка удалена успешно' }))
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Некорректный id карточки'));
-        return;
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
