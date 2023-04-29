@@ -47,6 +47,12 @@ app.use(router);
 
 app.use(errors());
 
+app.use((req, res) => {
+  res.status(404).send({
+    message: 'Страница не найдена',
+  });
+});
+
 // Мидлвэр для централизованной обработки ошибок
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
