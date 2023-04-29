@@ -1,12 +1,15 @@
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {BadRequestError, NotFoundError, ConflictError, UnauthorizedError} = require('../utils/errors');
+const User = require('../models/user');
+const { BadRequestError } = require('../errors/BadRequestError');
+const { NotFoundError } = require('../errors/NotFoundError');
+const { ConflictError } = require('../errors/ConflictError');
+const { UnauthorizedError } = require('../errors/UnauthorizedError');
 
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => {
+    .catch((err) => {
       next(err);
     });
 };
@@ -49,10 +52,14 @@ const getUserInfo = (req, res, next) => {
 };
 
 const createUser = (req, res, next) => {
-  const { name, about, avatar, email } = req.body;
+  const {
+    name, about, avatar, email
+  } = req.body;
   bcrypt
     .hash(req.body.password, 10)
-    .then((hash) => User.create({ name, about, avatar, email, password: hash }))
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash
+    }))
     .then((newUser) => {
       res.status(201).send({
         email: newUser.email,

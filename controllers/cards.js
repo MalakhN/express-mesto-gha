@@ -1,12 +1,14 @@
 const Card = require('../models/card');
-const {BadRequestError, NotFoundError, ForbiddenError} = require('../utils/errors');
+const { BadRequestError } = require('../errors/BadRequestError');
+const { NotFoundError } = require('../errors/NotFoundError');
+const { ForbiddenError } = require('../errors/ForbiddenError');
 
 const getAllCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
       res.send(cards);
     })
-    .catch(() => {
+    .catch((err) => {
       next(err);
     });
 };
@@ -28,15 +30,16 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
-      } else if (card.owner.toString() !== req.user._id) {
+      } else if (!card.owner.equals(req.user._id)) {
         throw new ForbiddenError('Пользователь не может удалить карточку, которую он не создавал');
       } else {
-        res.send(card);
+        card.deleteOne()
+          .then(() => res.status(200))
+          .catch(next);
       }
     })
     .catch((err) => {
