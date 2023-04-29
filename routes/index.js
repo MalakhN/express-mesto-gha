@@ -5,6 +5,7 @@ const { auth } = require('../middlewares/auth');
 const { regEx } = require('../utils/regEx');
 const usersRouter = require('./users');
 const cardsRouter = require('./cards');
+const { NotFoundError } = require('../errors/NotFoundError');
 
 router.post(
   '/signin',
@@ -32,6 +33,10 @@ router.post(
 );
 
 router.use(auth);
+
+router.use((req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
+});
 
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
