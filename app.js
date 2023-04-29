@@ -8,7 +8,6 @@ const { errors } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
 const { regEx } = require('./utils/regEx');
-const { NotFoundError } = require('./errors/NotFoundError');
 const router = require('./routes');
 
 const app = express();
@@ -42,10 +41,6 @@ app.post(
   }),
   createUser
 );
-
-app.use((req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
-});
 
 app.use(auth);
 app.use(router);
