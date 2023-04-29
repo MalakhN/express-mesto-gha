@@ -9,6 +9,7 @@ const { login, createUser } = require('./controllers/users');
 const { auth } = require('./middlewares/auth');
 const { regEx } = require('./utils/regEx');
 const router = require('./routes');
+const { NotFoundError } = require('./errors/NotFoundError');
 
 const app = express();
 
@@ -47,10 +48,8 @@ app.use(router);
 
 app.use(errors());
 
-app.use((req, res) => {
-  res.status(404).send({
-    message: 'Страница не найдена',
-  });
+app.use((req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
 });
 
 // Мидлвэр для централизованной обработки ошибок
